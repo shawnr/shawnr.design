@@ -1,0 +1,148 @@
+{{ define "main" }}
+
+<div class="gallery-wrap">
+
+  {{/* ── Filter bar ───────────────────────────────────────────── */}}
+  <div class="filter-bar">
+    <div class="filter-bar-inner">
+      <span class="filter-label">filter</span>
+      <div class="filter-chips" id="filter-chips">
+        <button class="fchip active" data-filter="all">all</button>
+
+        {{/* Collect unique categories */}}
+        {{ $categories := slice }}
+        {{ range .Pages }}
+          {{ with .Params.category }}
+            {{ $categories = $categories | append . }}
+          {{ end }}
+        {{ end }}
+        {{ range ($categories | uniq) }}
+          <button class="fchip fchip-cat" data-filter="category-{{ . | urlize }}">{{ . }}</button>
+        {{ end }}
+
+        {{/* Collect unique techniques across all projects */}}
+        {{ $techniques := slice }}
+        {{ range .Pages }}
+          {{ range .Params.techniques }}
+            {{ $techniques = $techniques | append . }}
+          {{ end }}
+        {{ end }}
+        {{ range ($techniques | uniq) }}
+          <button class="fchip" data-filter="technique-{{ . | urlize }}">{{ . }}</button>
+        {{ end }}
+
+        {{/* Collect unique materials */}}
+        {{ $materials := slice }}
+        {{ range .Pages }}
+          {{ range .Params.materials }}
+            {{ $materials = $materials | append . }}
+          {{ end }}
+        {{ end }}
+        {{ range ($materials | uniq) }}
+          <button class="fchip fchip-mat" data-filter="material-{{ . | urlize }}">{{ . }}</button>
+        {{ end }}
+      </div>
+      <span class="project-count" id="project-count">{{ len .Pages }} projects</span>
+    </div>
+  </div>
+
+  {{/* ── Asymmetric grid ──────────────────────────────────────── */}}
+  <div class="gallery-grid" id="gallery-grid">
+    {{ range $i, $page := .Pages }}
+
+      {{/* Determine card size class in the asymmetric pattern:
+           Pattern repeats every 5: featured, tall, normal, normal, normal
+           featured = spans 2 cols
+           tall = spans 2 rows
+      */}}
+      {{ $mod := mod $i 5 }}
+      {{ $sizeClass := "card-normal" }}
+      {{ if eq $mod 0 }}{{ $sizeClass = "card-featured" }}{{ end }}
+      {{ if eq $mod 1 }}{{ $sizeClass = "card-tall" }}{{ end }}
+
+      {{/* Build data-tags for JS filtering */}}
+      {{ $dataTags := slice }}
+      {{ with $page.Params.category }}{{ $dataTags = $dataTags | append (printf "category-%s" (. | urlize)) }}{{ end }}
+      {{ range $page.Params.techniques }}{{ $dataTags = $dataTags | append (printf "technique-%s" (. | urlize)) }}{{ end }}
+      {{ range $page.Params.materials }}{{ $dataTags = $dataTags | append (printf "material-%s" (. | urlize)) }}{{ end }}
+
+      <a href="{{ $page.RelPermalink }}"
+         class="gallery-card {{ $sizeClass }}"
+         data-tags="{{ delimit $dataTags " " }}"
+         style="{{ with $page.Params.cover }}--cover-url: url('{{ $.Site.Params.mediaBaseUrl }}/{{ $page.Params.slug }}/{{ . }}');{{ end }}">
+
+        {{ if eq $mod 0 }}<div class="card-spectrum-bar"></div>{{ end }}
+
+        <div class="card-img-wrap">
+          {{ with $page.Params.cover }}
+            <img
+              src="{{ $.Site.Params.mediaBaseUrl }}/{{ $page.Params.slug }}/{{ . }}"
+              alt="{{ $page.Title }}"
+              class="card-img"
+              loading="{{ if lt $i 3 }}eager{{ else }}lazy{{ end }}"
+            />
+          {{ else }}
+            <div class="card-img-placeholder"></div>
+          {{ end }}
+        </div>
+
+        <div class="card-meta">
+          <div class="card-title">{{ $page.Title }}</div>
+          <div class="card-date">{{ $page.Params.date | time.Format "2006-01-02" }}</div>
+          <div class="card-chips">
+            {{ with $page.Params.category }}
+              <span class="chip chip-cat">{{ . }}</span>
+            {{ end }}
+            {{ range $page.Params.techniques }}
+              <span class="chip chip-tech">{{ . }}</span>
+            {{ end }}
+            {{ range $page.Params.materials }}
+              <span class="chip chip-mat">{{ . }}</span>
+            {{ end }}
+          </div>
+        </div>
+      </a>
+
+    {{ end }}
+  </div>
+
+  <div class="gallery-empty hidden" id="gallery-empty">
+    <span>no projects match that filter</span>
+  </div>
+
+</div>
+
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+(function () {
+  const chips   = document.querySelectorAll('.fchip');
+  const cards   = document.querySelectorAll('.gallery-card');
+  const counter = document.getElementById('project-count');
+  const empty   = document.getElementById('gallery-empty');
+  let   current = 'all';
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      current = chip.dataset.filter;
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      filter();
+    });
+  });
+
+  function filter() {
+    let visible = 0;
+    cards.forEach(card => {
+      const tags = card.dataset.tags || '';
+      const show = current === 'all' || tags.split(' ').includes(current);
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    counter.textContent = visible + ' project' + (visible === 1 ? '' : 's');
+    empty.classList.toggle('hidden', visible > 0);
+  }
+})();
+</script>
+{{ end }}

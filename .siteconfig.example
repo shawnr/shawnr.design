@@ -1,0 +1,13 @@
+# shawnr.design — local site configuration
+# Copy this file to .siteconfig and fill in your values.
+# .siteconfig is gitignored and will never be committed.
+
+# Path to media files (outside the Hugo repo)
+MEDIA_DIR="$HOME/media/shawnrdesign"
+
+# Base URL for media on the live site (served from Ionos)
+MEDIA_BASE_URL=""
+
+# Ionos SSH target — media files only (site deploys via GitHub Pages)
+IONOS_HOST=""
+IONOS_MEDIA_PATH=""

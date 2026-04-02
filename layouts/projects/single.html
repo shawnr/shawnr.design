@@ -1,0 +1,198 @@
+{{ define "main" }}
+
+{{ $mediaBase := printf "%s/%s" .Site.Params.mediaBaseUrl .Params.slug }}
+
+<article class="project-wrap">
+
+  {{/* ── Header ──────────────────────────────────────────────── */}}
+  <div class="project-header">
+    <div class="project-spectrum"></div>
+    <div class="project-header-inner">
+      <div class="project-meta-top">
+        <a href="{{ "/projects" | relURL }}" class="back-link">← all work</a>
+        <span class="project-date">{{ .Params.date | time.Format "January 2, 2006" }}</span>
+      </div>
+      <h1 class="project-title">{{ .Title }}</h1>
+      <div class="project-chips">
+        {{ with .Params.category }}
+          <span class="chip chip-cat">{{ . }}</span>
+        {{ end }}
+        {{ range .Params.techniques }}
+          <span class="chip chip-tech">{{ . }}</span>
+        {{ end }}
+        {{ range .Params.materials }}
+          <span class="chip chip-mat">{{ . }}</span>
+        {{ end }}
+        {{ range .Params.tags }}
+          <span class="chip chip-tag">{{ . }}</span>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+
+  {{/* ── Body ───────────────────────────────────────────────── */}}
+  <div class="project-body-wrap">
+
+    <div class="project-statement">
+      {{ .Content }}
+    </div>
+
+    {{/* ── Media grid ─────────────────────────────────────────── */}}
+    {{ with .Params.media }}
+    <div class="media-masonry" id="media-masonry">
+      {{ range $i, $item := . }}
+        {{ $src := printf "%s/%s" $mediaBase $item.file }}
+
+        {{ if eq $item.type "video" }}
+          {{/* Inline video player */}}
+          <div class="media-item media-item-video">
+            <video
+              class="media-video"
+              src="{{ $src }}"
+              controls
+              preload="metadata"
+              playsinline
+            ></video>
+            {{ with $item.caption }}
+              <div class="media-caption">{{ . }}</div>
+            {{ end }}
+          </div>
+
+        {{ else }}
+          {{/* Image — opens lightbox on click */}}
+          <div class="media-item media-item-image"
+               data-lightbox="{{ $i }}"
+               data-src="{{ $src }}"
+               data-caption="{{ $item.caption }}">
+            <img
+              src="{{ $src }}"
+              alt="{{ $item.caption | default $.Title }}"
+              class="media-img"
+              loading="{{ if lt $i 2 }}eager{{ else }}lazy{{ end }}"
+            />
+            {{ with $item.caption }}
+              <div class="media-caption">{{ . }}</div>
+            {{ end }}
+          </div>
+        {{ end }}
+
+      {{ end }}
+    </div>
+    {{ end }}
+
+  </div>{{/* /project-body-wrap */}}
+
+  {{/* ── Adjacent project nav ──────────────────────────────── */}}
+  <nav class="project-nav">
+    {{ with .PrevInSection }}
+      <a href="{{ .RelPermalink }}" class="project-nav-link project-nav-prev">
+        <span class="nav-dir">← previous</span>
+        <span class="nav-title">{{ .Title }}</span>
+      </a>
+    {{ end }}
+    {{ with .NextInSection }}
+      <a href="{{ .RelPermalink }}" class="project-nav-link project-nav-next">
+        <span class="nav-dir">next →</span>
+        <span class="nav-title">{{ .Title }}</span>
+      </a>
+    {{ end }}
+  </nav>
+
+</article>
+
+{{/* ── Lightbox ────────────────────────────────────────────── */}}
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" id="lb-close" aria-label="Close">✕</button>
+  <button class="lb-prev"  id="lb-prev"  aria-label="Previous">‹</button>
+  <button class="lb-next"  id="lb-next"  aria-label="Next">›</button>
+  <div class="lb-stage">
+    <img class="lb-img" id="lb-img" src="" alt="" />
+    <div class="lb-caption" id="lb-caption"></div>
+  </div>
+  <div class="lb-counter" id="lb-counter"></div>
+</div>
+<div class="lb-backdrop" id="lb-backdrop"></div>
+
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+(function () {
+  // Collect all image items in order
+  const items = Array.from(document.querySelectorAll('.media-item-image'));
+  if (!items.length) return;
+
+  const lightbox  = document.getElementById('lightbox');
+  const backdrop  = document.getElementById('lb-backdrop');
+  const lbImg     = document.getElementById('lb-img');
+  const lbCaption = document.getElementById('lb-caption');
+  const lbCounter = document.getElementById('lb-counter');
+  const lbClose   = document.getElementById('lb-close');
+  const lbPrev    = document.getElementById('lb-prev');
+  const lbNext    = document.getElementById('lb-next');
+
+  let current = 0;
+
+  function open(index) {
+    current = index;
+    show();
+    lightbox.classList.add('active');
+    backdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    lbClose.focus();
+  }
+
+  function close() {
+    lightbox.classList.remove('active');
+    backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+    lbImg.src = '';
+  }
+
+  function show() {
+    const item = items[current];
+    const src     = item.dataset.src;
+    const caption = item.dataset.caption || '';
+    lbImg.src       = src;
+    lbImg.alt       = caption;
+    lbCaption.textContent = caption;
+    lbCounter.textContent = `${current + 1} / ${items.length}`;
+    lbPrev.style.display = current === 0              ? 'none' : '';
+    lbNext.style.display = current === items.length-1 ? 'none' : '';
+  }
+
+  function prev() { if (current > 0)              { current--; show(); } }
+  function next() { if (current < items.length-1) { current++; show(); } }
+
+  // Click to open
+  items.forEach((item, i) => {
+    item.addEventListener('click', () => open(i));
+  });
+
+  // Controls
+  lbClose.addEventListener('click', close);
+  backdrop.addEventListener('click', close);
+  lbPrev.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+  lbNext.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape')      close();
+    if (e.key === 'ArrowLeft')   prev();
+    if (e.key === 'ArrowRight')  next();
+  });
+
+  // Touch swipe
+  let touchX = null;
+  lightbox.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; });
+  lightbox.addEventListener('touchend',   (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+    touchX = null;
+  });
+
+})();
+</script>
+{{ end }}

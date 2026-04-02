@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shawnr.design / CMS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="header-inner">
+        <div class="wordmark">
+          <span class="wm-main">shawnr.design</span>
+          <span class="wm-sub">content management system</span>
+        </div>
+        <nav id="main-nav">
+          <button class="nav-btn active" data-view="projects">PROJECTS</button>
+          <button class="nav-btn" data-view="new">NEW PROJECT</button>
+          <button class="nav-btn" id="sync-btn">SYNC ↑</button>
+        </nav>
+      </div>
+      <div id="status-bar">
+        <span id="status-msg">ready</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- PROJECTS LIST VIEW -->
+      <section id="view-projects" class="view active">
+        <div class="view-header">
+          <h2>All Projects</h2>
+          <span id="project-count" class="count-badge">—</span>
+        </div>
+        <div id="project-list" class="project-list">
+          <div class="loading-state">loading projects…</div>
+        </div>
+      </section>
+
+      <!-- NEW / EDIT PROJECT VIEW -->
+      <section id="view-new" class="view">
+        <div class="view-header">
+          <h2 id="form-heading">New Project</h2>
+          <button id="cancel-edit-btn" class="ghost-btn" style="display:none">← back</button>
+        </div>
+
+        <div class="form-layout">
+          <!-- LEFT: metadata -->
+          <div class="form-col form-meta">
+            <div class="field-group">
+              <label for="f-title">Title</label>
+              <input type="text" id="f-title" placeholder="Sebenza 31 — Titanium Anodize" />
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="f-date">Date</label>
+                <input type="date" id="f-date" />
+              </div>
+              <div class="field-group">
+                <label for="f-slug">Slug <span class="field-hint">(auto)</span></label>
+                <input type="text" id="f-slug" placeholder="titanium-sebenza-31" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="f-category">Category</label>
+              <select id="f-category">
+                <option value="">-- select --</option>
+                <option value="knives">knives</option>
+                <option value="coins">coins</option>
+                <option value="skilltoys">skilltoys</option>
+                <option value="pens">pens</option>
+                <option value="other">other</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label for="f-cover">Cover image filename</label>
+              <input type="text" id="f-cover" placeholder="01.jpg" />
+              <span class="field-hint">must match a file in the media folder</span>
+            </div>
+
+            <div class="field-group">
+              <label>Techniques</label>
+              <div class="tag-input-wrap">
+                <div id="techniques-tags" class="tag-list"></div>
+                <input type="text" id="techniques-input" class="tag-input" placeholder="add technique, press Enter" />
+              </div>
+              <div class="quick-tags">
+                <span class="quick-tag-label">quick add:</span>
+                <button class="qtag" data-field="techniques">anodizing</button>
+                <button class="qtag" data-field="techniques">etching</button>
+                <button class="qtag" data-field="techniques">engraving</button>
+                <button class="qtag" data-field="techniques">patina</button>
+                <button class="qtag" data-field="techniques">part-swap</button>
+                <button class="qtag" data-field="techniques">electronics</button>
+                <button class="qtag" data-field="techniques">assembly</button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label>Materials</label>
+              <div class="tag-input-wrap">
+                <div id="materials-tags" class="tag-list"></div>
+                <input type="text" id="materials-input" class="tag-input" placeholder="add material, press Enter" />
+              </div>
+              <div class="quick-tags">
+                <span class="quick-tag-label">quick add:</span>
+                <button class="qtag" data-field="materials">titanium</button>
+                <button class="qtag" data-field="materials">copper</button>
+                <button class="qtag" data-field="materials">brass</button>
+                <button class="qtag" data-field="materials">steel</button>
+                <button class="qtag" data-field="materials">aluminum</button>
+                <button class="qtag" data-field="materials">acrylic</button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label>Item type / tags</label>
+              <div class="tag-input-wrap">
+                <div id="tags-tags" class="tag-list"></div>
+                <input type="text" id="tags-input" class="tag-input" placeholder="add tag, press Enter" />
+              </div>
+              <div class="quick-tags">
+                <span class="quick-tag-label">quick add:</span>
+                <button class="qtag" data-field="tags">knife</button>
+                <button class="qtag" data-field="tags">pen</button>
+                <button class="qtag" data-field="tags">flashlight</button>
+                <button class="qtag" data-field="tags">coin</button>
+                <button class="qtag" data-field="tags">skilltoy</button>
+                <button class="qtag" data-field="tags">electronics</button>
+                <button class="qtag" data-field="tags">instrument</button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="f-body">Artist statement / description</label>
+              <textarea id="f-body" rows="6" placeholder="What happened here. What you were going for. What surprised you."></textarea>
+            </div>
+
+            <div class="field-group">
+              <label>
+                <input type="checkbox" id="f-draft" /> Draft (don't publish yet)
+              </label>
+            </div>
+          </div>
+
+          <!-- RIGHT: media -->
+          <div class="form-col form-media">
+            <div class="media-section-header">
+              <h3>Media Files</h3>
+              <span id="media-slug-note" class="field-hint"></span>
+            </div>
+
+            <div id="drop-zone" class="drop-zone">
+              <div class="drop-icon">⬆</div>
+              <div class="drop-label">Drop files here or click to browse</div>
+              <div class="drop-hint">images + video — filenames will be preserved</div>
+              <input type="file" id="file-input" multiple accept="image/*,video/*" style="display:none" />
+            </div>
+
+            <div id="upload-queue" class="upload-queue"></div>
+
+            <div id="media-list-header" class="media-list-header" style="display:none">
+              <h4>Files on disk</h4>
+            </div>
+            <div id="media-list" class="media-list"></div>
+
+            <div id="media-order-section" class="field-group" style="display:none">
+              <label>Media order + captions <span class="field-hint">(drag to reorder)</span></label>
+              <div id="media-order-list" class="media-order-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button id="save-btn" class="primary-btn">SAVE PROJECT</button>
+          <span class="form-action-hint">saves .md file to Hugo content dir</span>
+        </div>
+      </section>
+
+      <!-- SYNC LOG VIEW (modal-ish overlay) -->
+      <div id="sync-overlay" class="sync-overlay hidden">
+        <div class="sync-panel">
+          <div class="sync-header">
+            <h3>SYNC</h3>
+            <button id="sync-close-btn" class="ghost-btn">✕</button>
+          </div>
+          <div class="sync-targets" id="sync-targets"></div>
+          <div id="sync-log" class="sync-log"></div>
+          <div class="sync-actions">
+            <button id="sync-run-btn" class="primary-btn">RUN RSYNC</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

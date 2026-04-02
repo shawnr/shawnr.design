@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="{{ "css/main.css" | relURL }}" />
+
+  {{ block "head" . }}{{ end }}
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="{{ "/" | relURL }}" class="site-logo">
+        shawnr<span class="logo-dot">.</span>design
+      </a>
+      <nav class="site-nav">
+        <a href="{{ "/" | relURL }}"{{ if .IsHome }} class="active"{{ end }}>work</a>
+        <a href="{{ "/about" | relURL }}"{{ if eq .RelPermalink "/about/" }} class="active"{{ end }}>about</a>
+      </nav>
+    </div>
+    <div class="spectrum-bar"></div>
+  </header>
+
+  <main class="site-main">
+    {{ block "main" . }}{{ end }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-sig">shawnr.design — making things since 1975</span>
+      <span class="footer-copy">{{ now.Year }}</span>
+    </div>
+  </footer>
+
+  {{ block "scripts" . }}{{ end }}
+
+</body>
+</html>

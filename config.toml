@@ -1,0 +1,26 @@
+baseURL = "https://shawnr.design/"
+languageCode = "en-us"
+title = "shawnr.design"
+# No theme — pure custom templates in layouts/
+
+# Content
+[pagination]
+  pagerSize = 100                   # show all projects on the list page
+
+# Taxonomy — enables filtering by technique/material/tag
+[taxonomies]
+  technique = "techniques"
+  material  = "materials"
+  tag       = "tags"
+  category  = "categories"
+
+# Site params
+[params]
+  description  = "Craft work by Shawn Rider — anodizing, etching, patina, and making things."
+  mediaBaseUrl = "https://shawnr.design/media"   # ← where rsync puts your media files
+
+# Output formats
+[outputs]
+  home    = ["HTML"]
+  section = ["HTML"]
+  page    = ["HTML"]
