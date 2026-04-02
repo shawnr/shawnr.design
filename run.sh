@@ -39,12 +39,14 @@ case "${1:-help}" in
     fi
     SRC="$MEDIA_DIR/"
     DEST="$IONOS_HOST:$IONOS_MEDIA_PATH/"
+    # Only sync slug subdirectories — skip loose files in the media root
+    RSYNC_FILTER=(--include='*/' --include='*/**' --exclude='*')
     if [ "${2:-}" = "--go" ]; then
       echo "DEPLOYING media to Ionos (live)..."
-      rsync -avz "$SRC" "$DEST"
+      rsync -avz "${RSYNC_FILTER[@]}" "$SRC" "$DEST"
     else
       echo "DRY RUN — media deploy (add --go to execute for real)"
-      rsync -avzn "$SRC" "$DEST"
+      rsync -avzn "${RSYNC_FILTER[@]}" "$SRC" "$DEST"
     fi
     ;;
   media-server)

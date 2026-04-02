@@ -329,7 +329,7 @@ async function handleSync(req, res) {
 
     for (const [target, syncCfg] of Object.entries(cfg.rsync)) {
       try {
-        const cmd = `rsync -avz --progress "${syncCfg.src}" "${syncCfg.dest}"`;
+        const cmd = `rsync -avz --progress --include='*/' --include='*/**' --exclude='*' "${syncCfg.src}" "${syncCfg.dest}"`;
         const output = execSync(cmd, { encoding: "utf8", timeout: 120000 });
         results[target] = { ok: true, output };
       } catch (e) {

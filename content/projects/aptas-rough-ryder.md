@@ -7,7 +7,16 @@ cover: IMG_8327.jpg
 tags: ["knife", "edc", "slipjoint", "rainbow"]
 techniques: ["anodizing", "engraving"]
 materials: ["titanium"]
-media: []
+media:
+  - file: IMG_8326.jpg
+    type: image
+    caption: ""
+  - file: IMG_8327.jpg
+    type: image
+    caption: ""
+  - file: Edits_Aptas_Ti_glamor_shots_20251230_173026.mov
+    type: video
+    caption: ""
 draft: false
 ---
 
