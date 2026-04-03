@@ -69,14 +69,14 @@
       <a href="{{ $page.RelPermalink }}"
          class="gallery-card {{ $sizeClass }}"
          data-tags="{{ delimit $dataTags " " }}"
-         style="{{ with $page.Params.cover }}--cover-url: url('{{ $.Site.Params.mediaBaseUrl }}/{{ $page.Params.slug }}/{{ . }}');{{ end }}">
+         style="{{ with $page.Params.cover }}--cover-url: url('{{ $.Site.Params.mediaBaseUrl }}/{{ $page.Params.slug }}/preview/{{ . }}');{{ end }}">
 
         {{ if eq $mod 0 }}<div class="card-spectrum-bar"></div>{{ end }}
 
         <div class="card-img-wrap">
           {{ with $page.Params.cover }}
             <img
-              src="{{ $.Site.Params.mediaBaseUrl }}/{{ $page.Params.slug }}/{{ . }}"
+              src="{{ $.Site.Params.mediaBaseUrl }}/{{ $page.Params.slug }}/preview/{{ . }}"
               alt="{{ $page.Title }}"
               class="card-img"
               loading="{{ if lt $i 3 }}eager{{ else }}lazy{{ end }}"

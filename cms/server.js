@@ -266,7 +266,9 @@ async function handleUploadMedia(req, res) {
     if (!slug) return err(res, "slug field required in multipart", 400);
 
     const destDir = path.join(cfg.mediaDir, slug);
+    const previewDir = path.join(destDir, "preview");
     await fsp.mkdir(destDir, { recursive: true });
+    await fsp.mkdir(previewDir, { recursive: true });
 
     // Second pass: save files
     for (const p of parts) {
@@ -275,6 +277,23 @@ async function handleUploadMedia(req, res) {
         const destPath = path.join(destDir, safeName);
         await fsp.writeFile(destPath, p.data);
         savedFiles.push(safeName);
+
+        // Generate 800px preview for images using sips (macOS)
+        const ext = safeName.split(".").pop().toLowerCase();
+        if (["jpg", "jpeg", "png", "heic", "tiff"].includes(ext)) {
+          try {
+            const previewPath = path.join(previewDir, safeName);
+            // Copy original to preview dir, then resize in place
+            await fsp.copyFile(destPath, previewPath);
+            execSync(
+              `sips --resampleHeightWidthMax 800 "${previewPath}"`,
+              { encoding: "utf8", timeout: 30000 }
+            );
+          } catch (e) {
+            // Preview generation failed — not fatal, original still saved
+            console.error(`Preview generation failed for ${safeName}: ${e.message}`);
+          }
+        }
       }
     }
 
@@ -295,7 +314,7 @@ async function handleListMedia(req, res) {
     let files = [];
     try {
       const entries = await fsp.readdir(dir);
-      files = entries.filter((f) => !f.startsWith("."));
+      files = entries.filter((f) => !f.startsWith(".") && f !== "preview");
     } catch (_) {
       // dir doesn't exist yet, return empty
     }

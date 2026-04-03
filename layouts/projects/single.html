@@ -42,6 +42,7 @@
     <div class="media-masonry" id="media-masonry">
       {{ range $i, $item := . }}
         {{ $src := printf "%s/%s" $mediaBase $item.file }}
+        {{ $preview := printf "%s/preview/%s" $mediaBase $item.file }}
 
         {{ if eq $item.type "video" }}
           {{/* Inline video player */}}
@@ -59,13 +60,13 @@
           </div>
 
         {{ else }}
-          {{/* Image — opens lightbox on click */}}
+          {{/* Image — preview in grid, full size in lightbox */}}
           <div class="media-item media-item-image"
                data-lightbox="{{ $i }}"
                data-src="{{ $src }}"
                data-caption="{{ $item.caption }}">
             <img
-              src="{{ $src }}"
+              src="{{ $preview }}"
               alt="{{ $item.caption | default $.Title }}"
               class="media-img"
               loading="{{ if lt $i 2 }}eager{{ else }}lazy{{ end }}"

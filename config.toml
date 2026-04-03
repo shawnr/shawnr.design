@@ -17,7 +17,7 @@ title = "shawnr.design"
 # Site params
 [params]
   description  = "Craft work by Shawn Rider — anodizing, etching, patina, and making things."
-  mediaBaseUrl = "https://shawnr.design/media"   # ← where rsync puts your media files
+  mediaBaseUrl = "https://helperbots.org/shawnr.design/media"   # ← where rsync puts your media files
 
 # Output formats
 [outputs]
