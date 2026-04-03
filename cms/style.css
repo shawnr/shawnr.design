@@ -1,26 +1,37 @@
-/* shawnr.design CMS — lo-fi analog terminal */
+/* shawnr.design CMS — matches site theme */
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg:           #1a1a16;
-  --bg2:          #222218;
-  --bg3:          #2a2a22;
-  --border:       #3e3e32;
-  --border-hi:    #5a5a48;
-  --text:         #d4d4b8;
-  --text-dim:     #908e78;
-  --text-bright:  #f0f0d8;
-  --accent:       #d4b840;        /* warm voltage amber */
-  --accent-dim:   #7a6c22;
-  --accent2:      #78c8b0;        /* cool teal complement */
-  --accent2-dim:  #386858;
-  --danger:       #c85050;
+  --bg:           #0a0a0c;
+  --bg2:          #111114;
+  --bg3:          #1a1a1e;
+  --border:       #2a2a30;
+  --border-hi:    #40404a;
+  --text:         #d0d0d8;
+  --text-dim:     #808090;
+  --text-bright:  #f0f0f6;
+  --accent:       #f06090;        /* pink — primary action */
+  --accent-dim:   #802848;
+  --accent2:      #42cce0;        /* teal — sync / status */
+  --accent2-dim:  #1a6878;
+  --violet:       #b490f0;
+  --violet-dim:   #4e3480;
+  --green:        #72e0a0;
+  --green-dim:    #206040;
+  --danger:       #e05050;
   --danger-dim:   #6a2222;
-  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
-  --font-sans:    'IBM Plex Sans', sans-serif;
-  --radius:       2px;
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+  --radius:       3px;
   --header-h:     88px;
+
+  --spectrum: linear-gradient(90deg,
+    var(--accent)  0%,
+    var(--accent2) 33%,
+    var(--violet)  66%,
+    var(--green)   100%
+  );
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,7 +41,7 @@ html { font-size: 15px; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   min-height: 100vh;
   line-height: 1.6;
 }
@@ -61,30 +72,32 @@ header {
 
 .wm-main {
   font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.02em;
+  font-weight: 800;
+  color: var(--text-bright);
+  letter-spacing: -0.01em;
 }
 
 .wm-sub {
   font-size: 0.8rem;
+  font-weight: 500;
   color: var(--text-dim);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 #main-nav {
   display: flex;
-  gap: 4px;
+  gap: 6px;
 }
 
 .nav-btn {
   background: none;
   border: 1px solid var(--border);
   color: var(--text-dim);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 0.82rem;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   padding: 7px 16px;
   cursor: pointer;
   border-radius: var(--radius);
@@ -92,14 +105,14 @@ header {
 }
 
 .nav-btn:hover {
-  border-color: var(--accent-dim);
+  border-color: var(--border-hi);
   color: var(--text);
 }
 
 .nav-btn.active {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(184, 160, 48, 0.06);
+  background: rgba(240, 96, 144, 0.08);
 }
 
 #sync-btn {
@@ -108,7 +121,7 @@ header {
 }
 
 #sync-btn:hover {
-  background: rgba(106, 184, 160, 0.08);
+  background: rgba(66, 204, 224, 0.08);
   border-color: var(--accent2);
 }
 
@@ -116,9 +129,9 @@ header {
   padding: 5px 24px;
   background: var(--bg);
   border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
   font-size: 0.82rem;
   color: var(--text-dim);
-  letter-spacing: 0.08em;
 }
 
 #status-msg.busy { color: var(--accent); }
@@ -146,20 +159,21 @@ main {
 }
 
 .view-header h2 {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text);
 }
 
 .count-badge {
   font-size: 0.82rem;
-  color: var(--accent);
-  background: rgba(184,160,48,0.1);
-  border: 1px solid var(--accent-dim);
-  padding: 1px 8px;
+  font-family: var(--font-mono);
+  color: var(--accent2);
+  background: rgba(66, 204, 224, 0.1);
+  border: 1px solid var(--accent2-dim);
+  padding: 1px 10px;
   border-radius: 10px;
 }
 
@@ -168,7 +182,7 @@ main {
 .project-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .loading-state {
@@ -197,6 +211,7 @@ main {
 }
 
 .proj-date {
+  font-family: var(--font-mono);
   font-size: 0.82rem;
   color: var(--text-dim);
   white-space: nowrap;
@@ -205,7 +220,7 @@ main {
 .proj-title {
   font-size: 1rem;
   color: var(--text-bright);
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -218,6 +233,7 @@ main {
 }
 
 .tag-chip {
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   padding: 2px 8px;
   border: 1px solid var(--border);
@@ -238,8 +254,9 @@ main {
   background: none;
   border: 1px solid var(--border);
   color: var(--text-dim);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 0.82rem;
+  font-weight: 500;
   padding: 4px 10px;
   cursor: pointer;
   border-radius: var(--radius);
@@ -248,8 +265,8 @@ main {
 }
 
 .proj-edit-btn:hover {
-  border-color: var(--accent-dim);
-  color: var(--accent);
+  border-color: var(--accent2-dim);
+  color: var(--accent2);
 }
 
 .proj-del-btn:hover {
@@ -258,12 +275,13 @@ main {
 }
 
 .proj-draft-badge {
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   padding: 2px 8px;
-  border: 1px solid var(--accent-dim);
-  border-radius: 2px;
-  color: var(--accent-dim);
-  letter-spacing: 0.08em;
+  border: 1px solid var(--violet-dim);
+  border-radius: var(--radius);
+  color: var(--violet);
+  letter-spacing: 0.06em;
 }
 
 /* ── Form Layout ─────────────────────────────────────────────── */
@@ -291,7 +309,8 @@ main {
 
 label {
   font-size: 0.82rem;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text);
 }
@@ -308,7 +327,7 @@ input[type="text"],
 input[type="date"],
 select,
 textarea {
-  background: var(--bg2);
+  background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text-bright);
@@ -323,7 +342,7 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: var(--accent-dim);
+  border-color: var(--accent2-dim);
 }
 
 textarea { resize: vertical; }
@@ -336,7 +355,7 @@ input[type="checkbox"] {
 /* ── Tag Input ───────────────────────────────────────────────── */
 
 .tag-input-wrap {
-  background: var(--bg2);
+  background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 6px 8px;
@@ -348,7 +367,7 @@ input[type="checkbox"] {
 }
 
 .tag-input-wrap:focus-within {
-  border-color: var(--accent-dim);
+  border-color: var(--accent2-dim);
 }
 
 .tag-list {
@@ -359,12 +378,13 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: var(--bg3);
+  background: var(--bg2);
   border: 1px solid var(--border-hi);
   border-radius: 10px;
   padding: 2px 10px;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
-  color: var(--text);
+  color: var(--text-bright);
   white-space: nowrap;
 }
 
@@ -393,30 +413,30 @@ input[type="checkbox"] {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .quick-tag-label {
   font-size: 0.8rem;
   color: var(--text-dim);
-  letter-spacing: 0.06em;
 }
 
 .qtag {
   background: none;
   border: 1px solid var(--border);
   color: var(--text-dim);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 0.82rem;
-  padding: 3px 9px;
+  font-weight: 500;
+  padding: 3px 10px;
   cursor: pointer;
   border-radius: 10px;
   transition: all 0.12s;
 }
 
 .qtag:hover {
-  border-color: var(--accent-dim);
-  color: var(--accent);
+  border-color: var(--accent2-dim);
+  color: var(--accent2);
 }
 
 /* ── Media Column ────────────────────────────────────────────── */
@@ -429,7 +449,8 @@ input[type="checkbox"] {
 
 .media-section-header h3 {
   font-size: 0.85rem;
-  letter-spacing: 0.15em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text);
 }
@@ -448,8 +469,8 @@ input[type="checkbox"] {
 }
 
 .drop-zone:hover, .drop-zone.drag-over {
-  border-color: var(--accent);
-  background: rgba(184,160,48,0.04);
+  border-color: var(--accent2);
+  background: rgba(66, 204, 224, 0.04);
 }
 
 .drop-icon {
@@ -487,10 +508,10 @@ input[type="checkbox"] {
 }
 
 .queue-item .qi-name { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.queue-item .qi-size { color: var(--text-dim); font-size: 0.82rem; white-space: nowrap; }
-.queue-item .qi-status { font-size: 0.82rem; color: var(--accent2); }
-.queue-item.uploading { border-color: var(--accent-dim); }
-.queue-item.done { border-color: var(--accent2-dim); opacity: 0.7; }
+.queue-item .qi-size { font-family: var(--font-mono); color: var(--text-dim); font-size: 0.82rem; white-space: nowrap; }
+.queue-item .qi-status { font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent2); }
+.queue-item.uploading { border-color: var(--accent2-dim); }
+.queue-item.done { border-color: var(--green-dim); opacity: 0.7; }
 .queue-item.error { border-color: var(--danger); }
 
 .media-list-header {
@@ -499,7 +520,8 @@ input[type="checkbox"] {
 
 .media-list-header h4 {
   font-size: 0.82rem;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text);
 }
@@ -523,13 +545,13 @@ input[type="checkbox"] {
 }
 
 .media-item .mi-name { color: var(--text); }
-.media-item .mi-type { font-size: 0.82rem; color: var(--text-dim); }
+.media-item .mi-type { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-dim); }
 .mi-del-btn {
   background: none;
   border: none;
   color: var(--text-dim);
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   padding: 0 2px;
   transition: color 0.12s;
 }
@@ -557,7 +579,7 @@ input[type="checkbox"] {
 }
 
 .mo-item:active { cursor: grabbing; }
-.mo-item.drag-target { border-color: var(--accent); }
+.mo-item.drag-target { border-color: var(--accent2); }
 
 .mo-handle {
   color: var(--text-dim);
@@ -567,6 +589,7 @@ input[type="checkbox"] {
 }
 
 .mo-filename {
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   color: var(--text-bright);
   white-space: nowrap;
@@ -597,18 +620,18 @@ input[type="checkbox"] {
 .primary-btn {
   background: var(--accent);
   border: none;
-  color: var(--bg);
-  font-family: var(--font-mono);
+  color: #fff;
+  font-family: var(--font-display);
   font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   padding: 12px 28px;
   cursor: pointer;
   border-radius: var(--radius);
   transition: all 0.15s;
 }
 
-.primary-btn:hover { background: var(--text-bright); }
+.primary-btn:hover { background: #e04878; }
 .primary-btn:active { transform: translateY(1px); }
 
 .form-action-hint {
@@ -621,8 +644,9 @@ input[type="checkbox"] {
   background: none;
   border: 1px solid var(--border);
   color: var(--text-dim);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 0.85rem;
+  font-weight: 500;
   padding: 6px 14px;
   cursor: pointer;
   border-radius: var(--radius);
@@ -669,7 +693,8 @@ input[type="checkbox"] {
 
 .sync-header h3 {
   font-size: 0.9rem;
-  letter-spacing: 0.2em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   color: var(--accent2);
 }
 
@@ -689,11 +714,11 @@ input[type="checkbox"] {
 }
 
 .sync-target-label {
-  color: var(--accent);
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--accent2);
 }
 
-.sync-target-path { color: var(--text-dim); word-break: break-all; }
+.sync-target-path { color: var(--text-dim); word-break: break-all; font-family: var(--font-mono); }
 
 .sync-log {
   flex: 1;
@@ -708,7 +733,7 @@ input[type="checkbox"] {
   background: var(--bg);
 }
 
-.sync-log .log-ok   { color: var(--accent2); }
+.sync-log .log-ok   { color: var(--green); }
 .sync-log .log-err  { color: var(--danger); }
 .sync-log .log-info { color: var(--text-dim); }
 

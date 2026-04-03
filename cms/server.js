@@ -179,7 +179,7 @@ async function handleGetProjects(res) {
     for (const entry of entries) {
       const fullPath = path.join(dir, entry);
       const stat = await fsp.stat(fullPath);
-      if (stat.isFile() && entry.endsWith(".md")) {
+      if (stat.isFile() && entry.endsWith(".md") && entry !== "_index.md") {
         try {
           const { frontmatter, body } = readMarkdownFile(fullPath);
           projects.push({ filename: entry, frontmatter, body });
