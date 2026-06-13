@@ -29,24 +29,28 @@ case "${1:-help}" in
     echo "Done. Output in $HUGO_DIR/public/"
     ;;
   serve)
+    echo "Starting media server at http://localhost:8888..."
+    (cd "$MEDIA_DIR" && python3 -m http.server 8888 --bind 127.0.0.1 &) 2>/dev/null
+    MEDIA_PID=$!
+    trap "kill $MEDIA_PID 2>/dev/null" EXIT
     echo "Starting Hugo dev server..."
     cd "$HUGO_DIR" && hugo server --disableFastRender
     ;;
   deploy)
-    if [ -z "$IONOS_HOST" ] || [ -z "$IONOS_MEDIA_PATH" ]; then
-      echo "ERROR: IONOS_HOST and IONOS_MEDIA_PATH must be set in .siteconfig"
+    if [ -z "$R2_REMOTE" ] || [ -z "$R2_BUCKET" ]; then
+      echo "ERROR: R2_REMOTE and R2_BUCKET must be set in .siteconfig"
       exit 1
     fi
     SRC="$MEDIA_DIR/"
-    DEST="$IONOS_HOST:$IONOS_MEDIA_PATH/"
+    DEST="$R2_REMOTE:$R2_BUCKET"
     # Only sync slug subdirectories — skip loose files in the media root
-    RSYNC_FILTER=(--include='*/' --include='*/**' --exclude='*')
+    RCLONE_FILTER=(--filter '- .DS_Store' --filter '- .*' --filter '+ */**' --filter '- *')
     if [ "${2:-}" = "--go" ]; then
-      echo "DEPLOYING media to Ionos (live)..."
-      rsync -avz "${RSYNC_FILTER[@]}" "$SRC" "$DEST"
+      echo "DEPLOYING media to Cloudflare R2..."
+      rclone sync "$SRC" "$DEST" "${RCLONE_FILTER[@]}" --progress --transfers 4 --checkers 4 --tpslimit 10
     else
       echo "DRY RUN — media deploy (add --go to execute for real)"
-      rsync -avzn "${RSYNC_FILTER[@]}" "$SRC" "$DEST"
+      rclone sync "$SRC" "$DEST" "${RCLONE_FILTER[@]}" --dry-run --progress
     fi
     ;;
   media-server)

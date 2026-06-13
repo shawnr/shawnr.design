@@ -322,11 +322,13 @@ function renderDiskMedia() {
   for (const filename of state.diskMedia) {
     const ext = filename.split(".").pop().toLowerCase();
     const isVideo = ["mp4", "mov", "webm"].includes(ext);
+    const isCover = dom.fCover.value === filename;
     const row = document.createElement("div");
-    row.className = "media-item";
+    row.className = "media-item" + (isCover ? " is-cover" : "");
     row.innerHTML = `
       <span class="mi-name">${filename}</span>
       <span class="mi-type">${isVideo ? "▶ video" : "◻ image"}</span>
+      ${!isVideo ? `<button class="mi-cover-btn${isCover ? " active" : ""}" title="set as cover image" data-file="${filename}">★</button>` : ""}
       <button class="mi-del-btn" title="delete from disk" data-file="${filename}">✕</button>
     `;
     dom.mediaList.appendChild(row);
@@ -334,6 +336,12 @@ function renderDiskMedia() {
 }
 
 dom.mediaList.addEventListener("click", async (e) => {
+  const coverBtn = e.target.closest(".mi-cover-btn");
+  if (coverBtn) {
+    dom.fCover.value = coverBtn.dataset.file;
+    renderDiskMedia();
+    return;
+  }
   const btn = e.target.closest(".mi-del-btn");
   if (!btn) return;
   const slug = dom.fSlug.value;
@@ -562,10 +570,10 @@ dom.syncBtn.addEventListener("click", async () => {
     const res = await fetch(`${API}/config`);
     const cfg = await res.json();
     dom.syncTargets.innerHTML = "";
-    for (const [key, target] of Object.entries(cfg.rsync || {})) {
+    if (cfg.r2) {
       const row = document.createElement("div");
       row.className = "sync-target-row";
-      row.innerHTML = `<span class="sync-target-label">${key}</span><span class="sync-target-path">${target.src} → ${target.dest}</span>`;
+      row.innerHTML = `<span class="sync-target-label">media</span><span class="sync-target-path">${cfg.r2.mediaDir} → ${cfg.r2.remote}:${cfg.r2.bucket}</span>`;
       dom.syncTargets.appendChild(row);
     }
   } catch (_) {}

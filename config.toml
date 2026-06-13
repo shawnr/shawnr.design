@@ -17,7 +17,7 @@ title = "shawnr.design"
 # Site params
 [params]
   description  = "Craft work by Shawn Rider — anodizing, etching, patina, and making things."
-  mediaBaseUrl = "https://helperbots.org/shawnr.design/media"   # ← where rsync puts your media files
+  mediaBaseUrl = "https://pub-2a121dbef55a47d6b323ad70ce1d5de5.r2.dev"   # ← Cloudflare R2 public bucket
 
 # Output formats
 [outputs]

@@ -8,6 +8,7 @@ MEDIA_DIR="$HOME/media/shawnrdesign"
 # Base URL for media on the live site (served from Ionos)
 MEDIA_BASE_URL=""
 
-# Ionos SSH target — media files only (site deploys via GitHub Pages)
-IONOS_HOST=""
-IONOS_MEDIA_PATH=""
+# Cloudflare R2 — media deploy via rclone
+R2_REMOTE=""
+R2_BUCKET=""
+R2_PUBLIC_URL=""

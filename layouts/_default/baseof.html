@@ -20,11 +20,13 @@
   <header class="site-header">
     <div class="header-inner">
       <a href="{{ "/" | relURL }}" class="site-logo">
+        <img src="{{ "img/logomark.png" | relURL }}" alt="" class="logo-mark" />
         shawnr<span class="logo-dot">.</span>design
       </a>
       <nav class="site-nav">
-        <a href="{{ "/" | relURL }}"{{ if .IsHome }} class="active"{{ end }}>work</a>
+        <a href="{{ "/projects/" | relURL }}"{{ if or .IsHome (eq .Section "projects") }} class="active"{{ end }}>work</a>
         <a href="{{ "/about" | relURL }}"{{ if eq .RelPermalink "/about/" }} class="active"{{ end }}>about</a>
+        <a href="https://www.etsy.com/shop/ShawnRiderDesigns" target="_blank" rel="noopener">shop</a>
       </nav>
     </div>
     <div class="spectrum-bar"></div>
@@ -36,8 +38,11 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span class="footer-sig">shawnr.design — making things since 1975</span>
-      <span class="footer-copy">{{ now.Year }}</span>
+      <span class="footer-sig">shawnr.design | Hand finished in Seattle</span>
+      <div class="footer-links">
+        <a href="https://www.etsy.com/shop/ShawnRiderDesigns" target="_blank" rel="noopener">Etsy Shop</a>
+        <a href="https://www.instagram.com/shawnr/" target="_blank" rel="noopener">Instagram</a>
+      </div>
     </div>
   </footer>
 

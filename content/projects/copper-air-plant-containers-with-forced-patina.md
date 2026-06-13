@@ -1,6 +1,6 @@
 ---
 title: Copper Air Plant Containers with Forced Patina
-date: 2026-04-03
+date: 2025-12-13
 slug: copper-air-plant-containers-with-forced-patina
 category: other
 cover: IMG_8148.jpg
@@ -8,12 +8,10 @@ tags: ["household", "plants", "container"]
 techniques: ["patina"]
 materials: ["copper"]
 media:
-  - file: IMG_8148.jpg
-    type: image
-    caption: "Copper planter with forced patina"
   - file: Edits_Forced_patina_copper_planter_20251222_195125.MP4
     type: video
-    caption: "Copper planter glamor video"
+  - file: IMG_8148.jpg
+    type: image
 draft: false
 ---
 

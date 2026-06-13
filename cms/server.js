@@ -36,11 +36,11 @@ function loadConfig() {
     hugoContentDir,
     mediaDir:     env.MEDIA_DIR     || path.join(require("os").homedir(), "media", "shawnrdesign"),
     mediaBaseUrl: env.MEDIA_BASE_URL || "https://shawnr.design/media",
-    rsync: {
-      media: {
-        src:  (env.MEDIA_DIR || "") + "/",
-        dest: (env.IONOS_HOST && env.IONOS_MEDIA_PATH) ? `${env.IONOS_HOST}:${env.IONOS_MEDIA_PATH}/` : "",
-      },
+    r2: {
+      remote: env.R2_REMOTE || "",
+      bucket: env.R2_BUCKET || "",
+      publicUrl: env.R2_PUBLIC_URL || "",
+      mediaDir: env.MEDIA_DIR || "",
     },
   };
 }
@@ -344,19 +344,19 @@ async function handleDeleteMedia(req, res) {
 async function handleSync(req, res) {
   try {
     const cfg = loadConfig();
-    const results = {};
+    const { remote, bucket, mediaDir } = cfg.r2;
 
-    for (const [target, syncCfg] of Object.entries(cfg.rsync)) {
-      try {
-        const cmd = `rsync -avz --progress --include='*/' --include='*/**' --exclude='*' "${syncCfg.src}" "${syncCfg.dest}"`;
-        const output = execSync(cmd, { encoding: "utf8", timeout: 120000 });
-        results[target] = { ok: true, output };
-      } catch (e) {
-        results[target] = { ok: false, error: e.message };
-      }
+    if (!remote || !bucket || !mediaDir) {
+      return err(res, "R2 not configured — check .siteconfig");
     }
 
-    json(res, results);
+    try {
+      const cmd = `rclone sync "${mediaDir}/" "${remote}:${bucket}" --filter '- .DS_Store' --filter '- .*' --filter '+ */**' --filter '- *' --progress --transfers 4 --checkers 4 --tpslimit 10 2>&1`;
+      const output = execSync(cmd, { encoding: "utf8", timeout: 600000 });
+      json(res, { media: { ok: true, output } });
+    } catch (e) {
+      json(res, { media: { ok: false, error: e.message } });
+    }
   } catch (e) {
     err(res, "Sync failed: " + e.message);
   }

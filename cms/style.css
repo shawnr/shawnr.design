@@ -533,8 +533,7 @@ input[type="checkbox"] {
 }
 
 .media-item {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
+  display: flex;
   align-items: center;
   gap: 8px;
   padding: 5px 10px;
@@ -543,9 +542,21 @@ input[type="checkbox"] {
   border-radius: var(--radius);
   font-size: 0.85rem;
 }
+.media-item.is-cover { border-color: var(--accent2-dim); }
 
-.media-item .mi-name { color: var(--text); }
-.media-item .mi-type { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-dim); }
+.media-item .mi-name { color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.media-item .mi-type { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-dim); white-space: nowrap; }
+.mi-cover-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 2px;
+  transition: color 0.12s;
+}
+.mi-cover-btn:hover { color: var(--accent2); }
+.mi-cover-btn.active { color: var(--accent2); }
 .mi-del-btn {
   background: none;
   border: none;
