@@ -6,6 +6,44 @@
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}" />
 
+  {{/* ── Open Graph ──────────────────────────────────────────── */}}
+  {{ $ogTitle := cond .IsHome .Site.Title (printf "%s — %s" .Title .Site.Title) }}
+  {{ $ogDesc := .Description | default (.Summary | plainify | truncate 160) | default .Site.Params.description }}
+  {{ $ogType := cond (eq .Section "projects") "article" "website" }}
+
+  {{/* Determine OG image */}}
+  {{ $ogImage := "" }}
+  {{ if and (eq .Section "projects") .IsPage .Params.cover .Params.slug }}
+    {{/* Project page — use cover image */}}
+    {{ $ogImage = printf "%s/%s/preview/%s" .Site.Params.mediaBaseUrl .Params.slug .Params.cover }}
+  {{ else if or .IsHome (eq .Section "projects") }}
+    {{/* Home or projects list — pick a random project cover */}}
+    {{ $projects := where .Site.RegularPages "Section" "projects" }}
+    {{ with $projects }}
+      {{ $pick := index . (mod (now.UnixMilli) (len .)) }}
+      {{ with $pick }}
+        {{ if and .Params.cover .Params.slug }}
+          {{ $ogImage = printf "%s/%s/preview/%s" $.Site.Params.mediaBaseUrl .Params.slug .Params.cover }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ if not $ogImage }}
+    {{ $ogImage = (.Site.BaseURL | strings.TrimSuffix "/") | printf "%s/img/logomark.png" }}
+  {{ end }}
+
+  <meta property="og:title" content="{{ $ogTitle }}" />
+  <meta property="og:description" content="{{ $ogDesc }}" />
+  <meta property="og:type" content="{{ $ogType }}" />
+  <meta property="og:url" content="{{ .Permalink }}" />
+  <meta property="og:image" content="{{ $ogImage }}" />
+  <meta property="og:site_name" content="{{ .Site.Title }}" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{ $ogTitle }}" />
+  <meta name="twitter:description" content="{{ $ogDesc }}" />
+  <meta name="twitter:image" content="{{ $ogImage }}" />
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
