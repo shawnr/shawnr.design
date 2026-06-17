@@ -6,6 +6,10 @@
   <div class="filter-bar">
     <div class="filter-bar-inner">
       <span class="filter-label">filter</span>
+
+      {{/* Mobile dropdown — populated from the chips by JS */}}
+      <select class="filter-select" id="filter-select" aria-label="Filter projects"></select>
+
       <div class="filter-chips" id="filter-chips">
         <button class="fchip active" data-filter="all">all</button>
 
@@ -137,16 +141,29 @@
   const cards   = document.querySelectorAll('.gallery-card');
   const counter = document.getElementById('project-count');
   const empty   = document.getElementById('gallery-empty');
+  const select  = document.getElementById('filter-select');
   let   current = 'all';
 
+  // Mirror the chip set into the mobile dropdown
   chips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      current = chip.dataset.filter;
-      chips.forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      filter();
-    });
+    const opt = document.createElement('option');
+    opt.value = chip.dataset.filter;
+    opt.textContent = chip.textContent.trim();
+    select.appendChild(opt);
   });
+
+  function setActive(value) {
+    current = value;
+    chips.forEach(c => c.classList.toggle('active', c.dataset.filter === value));
+    select.value = value;
+    filter();
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => setActive(chip.dataset.filter));
+  });
+
+  select.addEventListener('change', () => setActive(select.value));
 
   function filter() {
     let visible = 0;
