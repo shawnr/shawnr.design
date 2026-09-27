@@ -324,6 +324,34 @@ async function handleListMedia(req, res) {
   }
 }
 
+// Serve one image for CMS previews — prefers the 800px copy in {slug}/preview/
+async function handleMediaFile(req, res) {
+  try {
+    const cfg = loadConfig();
+    const url = new URL("http://x" + req.url);
+    const slug = path.basename(url.searchParams.get("slug") || "");
+    const file = path.basename(url.searchParams.get("file") || "");
+    if (!slug || !file) return err(res, "slug and file params required", 400);
+
+    const dir = path.join(cfg.mediaDir, slug);
+    const candidates = [path.join(dir, "preview", file), path.join(dir, file)];
+    for (const filePath of candidates) {
+      try {
+        const data = await fsp.readFile(filePath);
+        const type = IMAGE_MIME[path.extname(file).toLowerCase()] || "application/octet-stream";
+        res.writeHead(200, { "Content-Type": type, "Cache-Control": "no-cache" });
+        return res.end(data);
+      } catch (_) {
+        // try next candidate
+      }
+    }
+    res.writeHead(404);
+    res.end("Not found");
+  } catch (e) {
+    err(res, "Could not read media: " + e.message);
+  }
+}
+
 async function handleDeleteMedia(req, res) {
   try {
     const cfg = loadConfig();
@@ -377,6 +405,14 @@ async function handleDeleteProject(req, res) {
   }
 }
 
+const IMAGE_MIME = {
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+};
+
 // ─── Static file serving (for index.html, app.js, style.css) ───────────────
 
 const MIME = {
@@ -422,6 +458,7 @@ const server = http.createServer(async (req, res) => {
   if (url === "/api/media" && req.method === "POST") return handleUploadMedia(req, res);
   if (url === "/api/media" && req.method === "GET") return handleListMedia(req, res);
   if (url === "/api/media" && req.method === "DELETE") return handleDeleteMedia(req, res);
+  if (url === "/api/media/file" && req.method === "GET") return handleMediaFile(req, res);
   if (url === "/api/sync" && req.method === "POST") return handleSync(req, res);
 
   return serveStatic(req, res);

@@ -347,6 +347,24 @@ textarea:focus {
 
 textarea { resize: vertical; }
 
+.cover-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cover-row input { flex: 1; min-width: 0; }
+
+.cover-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg3);
+  flex-shrink: 0;
+}
+
 input[type="checkbox"] {
   accent-color: var(--accent);
   margin-right: 6px;
@@ -682,6 +700,7 @@ input[type="checkbox"] {
 }
 
 .sync-overlay.hidden { display: none; }
+.cover-thumb.hidden { display: none; }
 
 .sync-panel {
   background: var(--bg2);

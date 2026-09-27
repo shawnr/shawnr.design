@@ -36,6 +36,7 @@ const dom = {
   fSlug:          $("f-slug"),
   fCategory:      $("f-category"),
   fCover:         $("f-cover"),
+  fCoverThumb:    $("f-cover-thumb"),
   fBody:          $("f-body"),
   fDraft:         $("f-draft"),
   dropZone:       $("drop-zone"),
@@ -148,6 +149,28 @@ dom.fSlug.addEventListener("input", () => {
   slugLocked = dom.fSlug.value !== "";
 });
 
+// ─── Cover thumbnail ─────────────────────────────────────────────────────────
+
+function updateCoverThumb() {
+  const slug = dom.fSlug.value.trim();
+  const file = dom.fCover.value.trim();
+  const img = dom.fCoverThumb;
+  if (!slug || !file) {
+    img.classList.add("hidden");
+    img.removeAttribute("src");
+    return;
+  }
+  img.src = `${API}/media/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(file)}`;
+  img.title = file;
+}
+
+dom.fCoverThumb.addEventListener("load", () => dom.fCoverThumb.classList.remove("hidden"));
+dom.fCoverThumb.addEventListener("error", () => dom.fCoverThumb.classList.add("hidden"));
+dom.fCover.addEventListener("input", () => {
+  updateCoverThumb();
+  renderDiskMedia();
+});
+
 // ─── Form clear / populate ───────────────────────────────────────────────────
 
 function clearForm() {
@@ -156,6 +179,7 @@ function clearForm() {
   dom.fSlug.value = "";
   dom.fCategory.value = "";
   dom.fCover.value = "";
+  updateCoverThumb();
   dom.fBody.value = "";
   dom.fDraft.checked = false;
   slugLocked = false;
@@ -183,6 +207,7 @@ function populateForm(project) {
   dom.fSlug.value = project.filename.replace(".md", "");
   dom.fCategory.value = fm.category || "";
   dom.fCover.value = fm.cover || "";
+  updateCoverThumb();
   dom.fBody.value = project.body || "";
   dom.fDraft.checked = fm.draft === "true" || fm.draft === true;
   slugLocked = true;
@@ -339,6 +364,7 @@ dom.mediaList.addEventListener("click", async (e) => {
   const coverBtn = e.target.closest(".mi-cover-btn");
   if (coverBtn) {
     dom.fCover.value = coverBtn.dataset.file;
+    updateCoverThumb();
     renderDiskMedia();
     return;
   }
@@ -512,6 +538,7 @@ async function uploadFile(item, slug) {
 dom.fSlug.addEventListener("change", () => {
   const slug = dom.fSlug.value;
   if (slug) loadDiskMedia(slug);
+  updateCoverThumb();
 });
 
 dom.saveBtn.addEventListener("click", saveProject);
