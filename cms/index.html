@@ -71,13 +71,17 @@
                 <option value="coins">coins</option>
                 <option value="skilltoys">skilltoys</option>
                 <option value="pens">pens</option>
+                <option value="tools">tools</option>
                 <option value="other">other</option>
               </select>
             </div>
 
             <div class="field-group">
               <label for="f-cover">Cover image filename</label>
-              <input type="text" id="f-cover" placeholder="01.jpg" />
+              <div class="cover-row">
+                <input type="text" id="f-cover" placeholder="01.jpg" />
+                <img id="f-cover-thumb" class="cover-thumb hidden" alt="cover preview" />
+              </div>
               <span class="field-hint">must match a file in the media folder</span>
             </div>
 
@@ -129,6 +133,9 @@
                 <button class="qtag" data-field="tags">flashlight</button>
                 <button class="qtag" data-field="tags">coin</button>
                 <button class="qtag" data-field="tags">skilltoy</button>
+                <button class="qtag" data-field="tags">tool</button>
+                <button class="qtag" data-field="tags">bit-driver</button>
+                <button class="qtag" data-field="tags">bottle-opener</button>
                 <button class="qtag" data-field="tags">electronics</button>
                 <button class="qtag" data-field="tags">instrument</button>
               </div>

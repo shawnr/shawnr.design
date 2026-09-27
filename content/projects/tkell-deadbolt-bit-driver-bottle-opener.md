@@ -2,9 +2,9 @@
 title: TKell Deadbolt Bit Driver Bottle Opener
 date: 2026-09-27
 slug: tkell-deadbolt-bit-driver-bottle-opener
-category: other
+category: tools
 cover: IMG_0965.jpg
-tags: ["bit driver", "bottle opener", "paper weight"]
+tags: ["tool", "bit-driver", "bottle-opener", "paperweight"]
 techniques: ["anodizing", "etching", "engraving"]
 materials: ["titanium"]
 media:

@@ -2,9 +2,9 @@
 title: Chaves Fat Man Bit Driver Tool
 date: 2026-09-26
 slug: chaves-fat-man-bit-driver-tool
-category: other
+category: tools
 cover: IMG_0912.jpg
-tags: ["tool", "driver"]
+tags: ["tool", "bit-driver"]
 techniques: ["anodizing", "etching", "engraving"]
 materials: ["titanium"]
 media:
