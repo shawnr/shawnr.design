@@ -3,9 +3,9 @@
 # .siteconfig is gitignored and will never be committed.
 
 # Path to media files (outside the Hugo repo)
-MEDIA_DIR="$HOME/media/shawnrdesign"
+MEDIA_DIR="/Users/you/media/shawnrdesign"   # absolute path — the CMS does not expand $HOME
 
-# Base URL for media on the live site (served from Ionos)
+# Base URL for media on the live site (Cloudflare R2 public URL)
 MEDIA_BASE_URL=""
 
 # Cloudflare R2 — media deploy via rclone

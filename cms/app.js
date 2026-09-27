@@ -563,7 +563,7 @@ async function saveProject() {
 
 dom.syncBtn.addEventListener("click", async () => {
   dom.syncOverlay.classList.remove("hidden");
-  dom.syncLog.innerHTML = '<span class="log-info">ready to sync — click RUN RSYNC to push files to server</span>\n';
+  dom.syncLog.innerHTML = '<span class="log-info">ready — click RUN SYNC to push media to Cloudflare R2 (may take a few minutes)</span>\n';
 
   // Show targets from config
   try {
@@ -582,7 +582,7 @@ dom.syncBtn.addEventListener("click", async () => {
 dom.syncCloseBtn.addEventListener("click", () => dom.syncOverlay.classList.add("hidden"));
 
 dom.syncRunBtn.addEventListener("click", async () => {
-  dom.syncLog.innerHTML = '<span class="log-info">running rsync…\n</span>';
+  dom.syncLog.innerHTML = '<span class="log-info">running rclone sync… (large uploads can take several minutes)\n</span>';
   dom.syncRunBtn.disabled = true;
   setStatus("syncing…", "busy");
 
@@ -590,6 +590,8 @@ dom.syncRunBtn.addEventListener("click", async () => {
     const res = await fetch(`${API}/sync`, { method: "POST" });
     const data = await res.json();
     dom.syncLog.innerHTML = "";
+
+    if (data.error) throw new Error(data.error);
 
     for (const [target, result] of Object.entries(data)) {
       const hdr = document.createElement("span");

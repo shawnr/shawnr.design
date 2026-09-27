@@ -23,7 +23,7 @@ function parseSiteconfig(filePath) {
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith("#")) continue;
-    const m = trimmed.match(/^([A-Z_]+)=["']?(.*?)["']?\s*$/);
+    const m = trimmed.match(/^([A-Z0-9_]+)=["']?(.*?)["']?\s*$/);
     if (m) vars[m[1]] = m[2];
   }
   return vars;
@@ -165,7 +165,7 @@ async function handleGetConfig(res) {
     const cfg = loadConfig();
     json(res, cfg);
   } catch (e) {
-    err(res, "Could not read config.json: " + e.message);
+    err(res, "Could not read .siteconfig: " + e.message);
   }
 }
 
@@ -351,8 +351,8 @@ async function handleSync(req, res) {
     }
 
     try {
-      const cmd = `rclone sync "${mediaDir}/" "${remote}:${bucket}" --filter '- .DS_Store' --filter '- .*' --filter '+ */**' --filter '- *' --progress --transfers 4 --checkers 4 --tpslimit 10 2>&1`;
-      const output = execSync(cmd, { encoding: "utf8", timeout: 600000 });
+      const cmd = `rclone sync "${mediaDir}/" "${remote}:${bucket}" --filter '- .DS_Store' --filter '- .*' --filter '+ */**' --filter '- *' --stats-one-line --stats 30s -v --transfers 4 --checkers 4 --tpslimit 10 2>&1`;
+      const output = execSync(cmd, { encoding: "utf8", timeout: 3600000, maxBuffer: 50 * 1024 * 1024 });
       json(res, { media: { ok: true, output } });
     } catch (e) {
       json(res, { media: { ok: false, error: e.message } });

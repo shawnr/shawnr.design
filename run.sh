@@ -7,9 +7,6 @@ HUGO_DIR="$SCRIPT_DIR"
 CMS_DIR="$SCRIPT_DIR/cms"
 MEDIA_DIR="$HOME/media/shawnrdesign"
 
-IONOS_HOST=""
-IONOS_MEDIA_PATH=""
-
 # ── Load local overrides if present ──────────────────────────────
 SITECONFIG="$SCRIPT_DIR/.siteconfig"
 if [ -f "$SITECONFIG" ]; then
@@ -66,7 +63,7 @@ case "${1:-help}" in
     echo "  cms            Start the CMS at localhost:3000"
     echo "  build          Build the Hugo site to public/"
     echo "  serve          Start Hugo dev server with live reload"
-    echo "  deploy         rsync media to Ionos (dry-run; add --go for real)"
+    echo "  deploy         rclone media to Cloudflare R2 (dry-run; add --go for real)"
     echo "  media-server   Serve media locally at localhost:8888 for dev"
     echo ""
     echo "Site deploys via GitHub Pages on push to main."

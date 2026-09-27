@@ -24,13 +24,37 @@ shawnr.design/
 
 ## Setup
 
-1. Copy all files into your Hugo repo root
-2. Edit `config.toml`:
-   - Set `baseURL` to your actual domain
-   - Set `params.mediaBaseUrl` to where your media lives on the server
-     (must match the rsync destination in the CMS config)
-3. Build: `hugo`
-4. Output is in `public/` — rsync that to your Ionos server
+1. Copy `.siteconfig.example` to `.siteconfig` (gitignored) and fill in:
+   - `MEDIA_DIR` — absolute path to the media folder (outside this repo)
+   - `MEDIA_BASE_URL` / `R2_PUBLIC_URL` — the Cloudflare R2 public bucket URL
+   - `R2_REMOTE` / `R2_BUCKET` — the rclone remote and bucket name
+     (set up the remote once with `rclone config`)
+2. In `config.toml`, `params.mediaBaseUrl` must point at the same R2 public URL.
+
+## Commands (`./run.sh`)
+
+| Command | What it does |
+|---|---|
+| `./run.sh cms` | Local CMS at http://localhost:3000 |
+| `./run.sh serve` | Hugo dev server + local media server on :8888 |
+| `./run.sh build` | Build the site to `public/` |
+| `./run.sh deploy` | Dry run of the media upload to R2 |
+| `./run.sh deploy --go` | Upload media to R2 for real (`rclone sync`) |
+| `./run.sh media-server` | Serve media locally on :8888 |
+
+## Publishing
+
+Text and media are published separately:
+
+1. **Media → Cloudflare R2.** Run `./run.sh deploy --go`, or use the CMS
+   **SYNC ↑ → RUN SYNC** button (same `rclone sync` command). Only slug
+   subfolders are uploaded; loose files and dotfiles in the media root are skipped.
+   `rclone sync` also deletes files from R2 that no longer exist locally.
+2. **Site → GitHub Pages.** Commit and push `content/` (and any template
+   changes) to `main`. The `.github/workflows/hugo.yml` action builds with
+   `hugo --minify` and deploys. No need to build or upload `public/` by hand.
+
+Sync media first, so new pages don't go live pointing at images that aren't uploaded yet.
 
 ## How projects render
 
@@ -73,12 +97,10 @@ The URL is constructed as:
 
   `{mediaBaseUrl}/{slug}/{filename}`
 
-Example: `https://shawnr.design/media/titanium-sebenza-31/01.jpg`
+Example: `{R2 public URL}/titanium-sebenza-31/01.jpg`
 
-To test locally with `hugo server`, you can temporarily point `mediaBaseUrl`
-at your local media directory via a simple HTTP server:
+The CMS also writes an 800px copy of each image to `{slug}/preview/`. Gallery
+and project pages use the preview; the lightbox loads the full-size file.
 
-  ```bash
-  cd /your/media/dir && python3 -m http.server 8080
-  # then set mediaBaseUrl = "http://localhost:8080" in config.toml
-  ```
+To test locally, `./run.sh serve` starts a media server on :8888 alongside
+`hugo server` (the dev media URL is set in `config/`).
