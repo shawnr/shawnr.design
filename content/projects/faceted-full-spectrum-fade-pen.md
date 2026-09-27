@@ -3,11 +3,13 @@ title: Faceted Full Spectrum Fade Pen
 date: 2026-09-27
 slug: faceted-full-spectrum-fade-pen
 category: pens
-cover: IMG_1163.jpg
+cover: IMG_1166.jpg
 tags: ["pen"]
 techniques: ["anodizing"]
 materials: ["titanium"]
 media:
+  - file: Edits_Faceted_full_spectrum_20260915_210519.MP4
+    type: video
   - file: IMG_1163.jpg
     type: image
   - file: IMG_1164.jpg
@@ -16,8 +18,6 @@ media:
     type: image
   - file: IMG_1166.jpg
     type: image
-  - file: Edits_Faceted_full_spectrum_20260915_210519.MP4
-    type: video
 draft: false
 ---
 
